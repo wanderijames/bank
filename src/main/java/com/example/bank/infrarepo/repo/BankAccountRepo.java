@@ -6,6 +6,8 @@ import com.example.bank.infrarepo.entities.Account;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -43,9 +45,10 @@ public class BankAccountRepo implements ModelEntityRepo<BankAccount, Long> {
      * @param record a bank account record to be persisted
      * @return a saved bank account
      */
+    @Transactional
     public Optional<BankAccount> save(BankAccount record) {
-        accountRepository.save(fromModel(record));
-        return Optional.of(record);
+        Account saveValue = accountRepository.save(fromModel(record));
+        return Optional.of(toModel(saveValue));
     }
 
     /**
@@ -53,7 +56,7 @@ public class BankAccountRepo implements ModelEntityRepo<BankAccount, Long> {
      * @param record a bank account that needs to be updated
      * @return a bank account
      */
-    @Override
+    @Transactional
     public BankAccount update(BankAccount record) {
         return null;
     }
@@ -63,7 +66,7 @@ public class BankAccountRepo implements ModelEntityRepo<BankAccount, Long> {
      * @param id bank account identifier
      * @return a bank account
      */
-    @Override
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public BankAccount findById(Long id) {
         Optional<Account> account = accountRepository.findById(id);
         return account.map(this::toModel).orElse(null);
@@ -73,7 +76,6 @@ public class BankAccountRepo implements ModelEntityRepo<BankAccount, Long> {
      * Get a list of bank accounts
      * @return a list a bank account
      */
-    @Override
     public List<BankAccount> findAll() {
         return List.of();
     }

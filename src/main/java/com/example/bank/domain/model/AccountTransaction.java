@@ -54,6 +54,6 @@ public record AccountTransaction(
     public static UUID generateInternalReference(Long accountNumber, BigDecimal transactionAmount,String description, Date transactionDate) {
         final SimpleDateFormat dateFormatter = new SimpleDateFormat("MMM d, yyyy");
         final String formattedDate = dateFormatter.format(transactionDate);
-        return UUID.fromString(accountNumber.toString() + description + transactionAmount.toString() + formattedDate);
+        return UUID.nameUUIDFromBytes((accountNumber.toString() + description + transactionAmount.toString() + formattedDate).getBytes());
     }
 }

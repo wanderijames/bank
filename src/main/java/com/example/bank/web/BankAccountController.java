@@ -7,10 +7,9 @@ import com.example.bank.domain.model.BankAccount;
 import com.example.bank.infrarepo.AccountTransactionCachingSimple;
 import com.example.bank.infrarepo.EventPublisherToConsole;
 import com.example.bank.infrarepo.repo.BankAccountRepo;
-import com.example.bank.infrarepo.repo.TransactionAccountRepo;
+import com.example.bank.infrarepo.repo.AccountTransactionRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -25,7 +24,7 @@ public class BankAccountController {
     private BankAccountRepo bankAccountRepo;
 
     @Autowired
-    private TransactionAccountRepo transactionAccountRepo;
+    private AccountTransactionRepo accountTransactionRepo;
 
     @Autowired
     private EventPublisherToConsole eventPublisherToConsole;
@@ -37,7 +36,7 @@ public class BankAccountController {
     public String withdraw(@RequestParam("accountId") Long accountId,
                            @RequestParam("amount") BigDecimal amount) throws Exception {
         WithdrawalFromBankAccount withdrawalFromBankAccount = new WithdrawalFromBankAccount(
-                bankAccountRepo, transactionAccountRepo, eventPublisherToConsole, accountTransactionCachingSimple
+                bankAccountRepo, accountTransactionRepo, eventPublisherToConsole, accountTransactionCachingSimple
         );
         return withdrawalFromBankAccount.withdraw(accountId, amount);
     }

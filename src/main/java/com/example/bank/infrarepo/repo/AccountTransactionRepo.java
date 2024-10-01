@@ -8,20 +8,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
 import com.example.bank.infrarepo.entities.Transaction;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-interface TransactionRepository extends JpaRepository<Transaction, Long> {
+interface AccountTransactionRepository extends JpaRepository<Transaction, Long> {
     Optional<Transaction> findByTransactionID(UUID transactionID);
 }
 
 @Component
-public class TransactionAccountRepo implements ModelEntityRepo<AccountTransaction, UUID> {
+public class AccountTransactionRepo implements ModelEntityRepo<AccountTransaction, UUID> {
 
     @Autowired
-    private TransactionRepository transactionRepository;
+    private AccountTransactionRepository accountTransactionRepository;
 
     public Transaction fromModel(AccountTransaction accountTransaction) {
         BankAccountRepo accountRepo = new BankAccountRepo();
@@ -51,24 +53,24 @@ public class TransactionAccountRepo implements ModelEntityRepo<AccountTransactio
         );
     }
 
-    @Override
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public Optional<AccountTransaction> save(AccountTransaction record) {
-        transactionRepository.save(fromModel(record));
-        return Optional.of(record);
+        Transaction savedTransaction = accountTransactionRepository.save(fromModel(record));
+        return Optional.of(toModel(savedTransaction));
     }
 
-    @Override
+
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public AccountTransaction update(AccountTransaction record) {
         return null;
     }
 
-    @Override
+
     public AccountTransaction findById(UUID id) {
-        Optional<Transaction> transaction = transactionRepository.findByTransactionID(id);
+        Optional<Transaction> transaction = accountTransactionRepository.findByTransactionID(id);
         return transaction.map(this::toModel).orElse(null);
     }
 
-    @Override
     public List<AccountTransaction> findAll() {
         return List.of();
     }

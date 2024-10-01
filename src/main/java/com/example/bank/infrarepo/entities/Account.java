@@ -10,7 +10,6 @@ import java.util.List;
 @Entity
 public class Account {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long accountNumber;
     private BigDecimal accountBalance;
     private Date balanceUpdateDate;
