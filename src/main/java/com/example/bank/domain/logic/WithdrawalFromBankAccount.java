@@ -5,9 +5,7 @@ import com.example.bank.domain.model.AccountTransaction;
 import com.example.bank.domain.model.BankAccount;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 public class WithdrawalFromBankAccount {
 
@@ -70,10 +68,17 @@ public class WithdrawalFromBankAccount {
             Optional<AccountTransaction> savedAccountTransaction = accountTransactionRepo.save(accountTransaction);
             if (savedAccountTransaction.isPresent()) {
                 this.cacheTransaction(savedAccountTransaction.get());
+                // This is just to demonstrate that we can also use vector clocks
+                // for events resolutions to downstream applications
+                Map<String, Long> clock = new HashMap<>();
+                clock.put("WITHDRAWAL_SERVCE", System.currentTimeMillis());
+                VectorClocks vectorClocks = new VectorClocks(clock);
+
                 WithdrawalEvent withdrawalEvent = new WithdrawalEvent(
                         accountTransaction,
                         "SUCCESSFUL",
-                        new Date()
+                        new Date(),
+                        vectorClocks
                 );
                 eventPublisher.setEvent(withdrawalEvent::toJson);
                 eventPublisher.publish();

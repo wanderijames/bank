@@ -1,5 +1,6 @@
 package com.example.bank.domain.events;
 
+import com.example.bank.domain.logic.VectorClocks;
 import com.example.bank.domain.model.AccountTransaction;
 import com.example.bank.domain.logic.ChangingToJson;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -9,7 +10,8 @@ import java.util.Date;
 public record WithdrawalEvent (
         AccountTransaction transaction,
         String status,
-        Date eventTime
+        Date eventTime,
+        VectorClocks eventClock
 ) implements Event {
     /**
      * @return a json string representation

@@ -2,6 +2,7 @@ package com.example.bank.web;
 
 import com.example.bank.domain.logic.ChangingToJson;
 import com.example.bank.domain.logic.OpeningOfBankAccount;
+import com.example.bank.domain.logic.VectorClocks;
 import com.example.bank.domain.logic.WithdrawalFromBankAccount;
 import com.example.bank.domain.model.BankAccount;
 import com.example.bank.infrarepo.AccountTransactionCachingSimple;

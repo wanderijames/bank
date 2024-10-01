@@ -9,6 +9,6 @@ public class ChangingToJson {
     public String toJson(Object object) throws JsonProcessingException {
         final ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-        return objectMapper.writeValueAsString(object);
+        return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
     }
 }
