@@ -2,25 +2,26 @@ package com.example.bank.infrarepo.repo;
 
 import com.example.bank.domain.logic.ModelEntityRepo;
 import com.example.bank.domain.model.BankAccount;
-import com.example.bank.infrarepo.entities.jpa.Account;
+import com.example.bank.infrarepo.entities.dynamo.Account;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Transactional;
+import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
+import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
+import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
+import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 
 import java.util.List;
 import java.util.Optional;
 
-interface AccountRepository extends JpaRepository<Account, Long> {
-    Optional<Account> findByAccountNumber(Long accountNumber);
-}
 
-@Component
-public class BankAccountRepo implements ModelEntityRepo<BankAccount, Long> {
+public class BankAccountRepoDynamo implements ModelEntityRepo<BankAccount, Long> {
 
-    @Autowired
-    private AccountRepository accountRepository;
+    private final DynamoDbEnhancedClient enhancedClient;
+
+    public BankAccountRepoDynamo(DynamoDbClient dynamoDbClient) {
+        this.enhancedClient = DynamoDbEnhancedClient.builder()
+                .dynamoDbClient(dynamoDbClient)
+                .build();
+    }
 
 
     public Account fromModel(BankAccount bankAccount) {
@@ -45,10 +46,10 @@ public class BankAccountRepo implements ModelEntityRepo<BankAccount, Long> {
      * @param record a bank account record to be persisted
      * @return a saved bank account
      */
-    @Transactional
     public Optional<BankAccount> save(BankAccount record) {
-        Account saveValue = accountRepository.save(fromModel(record));
-        return Optional.of(toModel(saveValue));
+        DynamoDbTable<Account> accountTable = enhancedClient.table("ACCOUNT", TableSchema.fromBean(Account.class));
+        accountTable.putItem(fromModel(record));
+        return Optional.of(record);
     }
 
     /**
@@ -56,7 +57,6 @@ public class BankAccountRepo implements ModelEntityRepo<BankAccount, Long> {
      * @param record a bank account that needs to be updated
      * @return a bank account
      */
-    @Transactional
     public BankAccount update(BankAccount record) {
         return null;
     }
@@ -66,10 +66,10 @@ public class BankAccountRepo implements ModelEntityRepo<BankAccount, Long> {
      * @param id bank account identifier
      * @return a bank account
      */
-    @Transactional(isolation = Isolation.SERIALIZABLE)
     public BankAccount findById(Long id) {
-        Optional<Account> account = accountRepository.findById(id);
-        return account.map(this::toModel).orElse(null);
+        DynamoDbTable<Account> accountTable = enhancedClient.table("ACCOUNT", TableSchema.fromBean(Account.class));
+        Account account = accountTable.getItem(r -> r.key(k -> k.partitionValue(id)));
+        return toModel(account);
     }
 
     /**

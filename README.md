@@ -46,6 +46,10 @@ The customer will expect to periodically receive/query this transactions log and
    a transaction. There are many strategies to make the database scalable such as sharding, federation, replication, indexing,
    denormalization and query optimisations which I will not discuss here.
    - This application can also be scaled horizontally and put in front of a loadbalancer.
+   - This is a reference setup and can support a relatively busy bank. However, to support a very business and large bank
+   I can use DynamoDB from AWS to manage accounts and its transaction logs. Good news is that only a small part of our code
+   will change. Nevertheless, to massively scale I would use AWS DynamoDB in managing the account. I have shown how we can easily add another persistent
+    technology such Dynamo. I have demonstrated how we can implement Atomic transactions in Dynamo.
 4. maintainability, structure, dependency management, portability
    - In adopting [DDD](https://martinfowler.com/bliki/DomainDrivenDesign.html), we have created domain entities and domain logic
    that operates on their own without any dependencies. This makes it easy for the business logic to be ported easily.
@@ -57,7 +61,8 @@ The customer will expect to periodically receive/query this transactions log and
    - I have made sure that I adhere to [SRP](https://en.wikipedia.org/wiki/Single-responsibility_principle) principle and that is
    why eventing, persistence, withdrawal operations have been seperated.
    I have also added service based vector clocks and event timestamps to be used by the downstream services. Every event published will
-   have vector clock and timestamps.
+   have vector clock and timestamps. Some of these additions are just academic to show potential use and adoption, full adoption
+   will require more context.
 
 
 
@@ -68,3 +73,4 @@ The customer will expect to periodically receive/query this transactions log and
 4. [Restate](https://restate.dev/blog/why-we-built-restate/)
 5. [2PC](https://en.wikipedia.org/wiki/Two-phase_commit_protocol)
 6. [SRP](https://en.wikipedia.org/wiki/Single-responsibility_principle)
+7. [Amazon DynamoDB Transactions: How it works](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/transaction-apis.html)

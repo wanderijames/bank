@@ -1,14 +1,14 @@
-package com.example.bank.infrarepo.entities;
+package com.example.bank.infrarepo.entities.jpa;
 
+import com.example.bank.infrarepo.entities.AccountInterface;
 import jakarta.persistence.*;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
 @Entity
-public class Account {
+public class Account implements AccountInterface {
     @Id
     private Long accountNumber;
     private BigDecimal accountBalance;

@@ -3,11 +3,11 @@ package com.example.bank.infrarepo.repo;
 import com.example.bank.domain.logic.ModelEntityRepo;
 import com.example.bank.domain.model.AccountTransaction;
 import com.example.bank.domain.model.BankAccount;
-import com.example.bank.infrarepo.entities.Account;
+import com.example.bank.infrarepo.entities.jpa.Account;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
-import com.example.bank.infrarepo.entities.Transaction;
+import com.example.bank.infrarepo.entities.jpa.Transaction;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 

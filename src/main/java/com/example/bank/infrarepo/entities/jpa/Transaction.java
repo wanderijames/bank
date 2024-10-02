@@ -1,5 +1,6 @@
-package com.example.bank.infrarepo.entities;
+package com.example.bank.infrarepo.entities.jpa;
 
+import com.example.bank.infrarepo.entities.TransactionInterface;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -10,7 +11,7 @@ import java.util.Date;
 import java.util.UUID;
 
 @Entity
-public class Transaction {
+public class Transaction implements TransactionInterface<Account> {
     @Id
     private UUID transactionID;
 
