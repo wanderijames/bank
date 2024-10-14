@@ -58,11 +58,17 @@ public class BankAccountInterfaceControllerTests {
         Map<String, Object> resultMap = new ObjectMapper().readValue(content, new TypeReference<>() {
         });
         this.mockMvc.perform(
-                        post(String.format("/bank/withdraw?amount=%d&accountId=%d", 10, resultMap.get("accountNumber")))
+                        post(String.format("/bank/withdraw?amount=%d&accountId=%d", 999, resultMap.get("accountNumber")))
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(equalTo("Withdrawal successful")));
+        this.mockMvc.perform(
+                        post(String.format("/bank/withdraw?amount=%d&accountId=%d", 900, resultMap.get("accountNumber")))
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string(equalTo("Insufficient funds for withdrawal")));
 
     }
 

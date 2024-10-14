@@ -14,7 +14,7 @@ public class Account implements AccountInterface {
     private BigDecimal accountBalance;
     private Date balanceUpdateDate;
 
-    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
     private List<Transaction> transactions;
 
 

@@ -25,6 +25,10 @@ public class AccountTransactionRepo implements ModelEntityRepo<AccountTransactio
     @Autowired
     private AccountTransactionRepository accountTransactionRepository;
 
+    @Autowired
+    private AccountRepository accountRepository;
+
+
     public Transaction fromModel(AccountTransaction accountTransaction) {
         BankAccountRepo accountRepo = new BankAccountRepo();
         Account account = accountRepo.fromModel(accountTransaction.bankAccount());
@@ -56,6 +60,8 @@ public class AccountTransactionRepo implements ModelEntityRepo<AccountTransactio
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public Optional<AccountTransaction> save(AccountTransaction record) {
         Transaction savedTransaction = accountTransactionRepository.save(fromModel(record));
+        BankAccountRepo accountRepo = new BankAccountRepo();
+        accountRepository.save(accountRepo.fromModel(record.bankAccount()));
         return Optional.of(toModel(savedTransaction));
     }
 

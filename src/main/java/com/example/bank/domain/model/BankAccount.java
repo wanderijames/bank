@@ -33,7 +33,7 @@ public record BankAccount(Long accountNumber, BigDecimal accountBalance, Date ba
     public AccountTransaction transact(BigDecimal transactionAmount, String description) {
         AccountTransaction accountTransaction = null;
         if (canTransact(transactionAmount)) {
-            final BigDecimal newBalance = accountBalance.subtract(transactionAmount);
+            final BigDecimal newBalance = accountBalance.add(transactionAmount);
             final BankAccount bankAccount = new BankAccount(accountNumber, newBalance, new Date());
             final Date transactionDate = new Date();
             accountTransaction = new AccountTransaction(
